@@ -17,11 +17,13 @@ def cleanformat(path, save_path, format_string):
     length = data['Timestamp'].count()
 
     # Read in UNIX timestamp into timestamp list using list comprehension
-    timestamp = [datetime.fromtimestamp(data.iloc[i,0]) for i in range(0, length)]
+    timestamp = [datetime.fromtimestamp(data.iloc[i, 0]) for i in range(0, length)]
+    prices = [data.iloc[i, 1] for i in range(0,length)]
 
     # WHILE Loop to parse timestamp list and convert to datetime string using the format specified.
     while(i<=(length-1)):
         data.iloc[i, 0] = datetime.strftime(timestamp[i], format_string)
+        data.iloc[i, 1] = prices[i].replace(",", "")
         percent_complete = (i/length)*100
         print("{:.4f}".format(percent_complete))
         i += 1

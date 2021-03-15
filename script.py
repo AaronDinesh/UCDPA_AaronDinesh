@@ -10,36 +10,31 @@ import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
-length = 3484305
-temp_length =300;
 
-path = r'C:\Users\aaron\Desktop\Coding\UCD Data Analytics\Bitcoin Data\BitcoinData.csv'
-
-def cleanformat(path,temp_length):
-    i = 0;
-    # Read in data and drop any rows with NAN
-    data = pd.read_csv(path)
-    data.dropna(inplace=True)
-    data.reset_index(drop=True, inplace=True)
-
-    # Read in UNIX timestamp and convert to DateTime String and replace
-    timestamp = [datetime.fromtimestamp(data.iloc[i,0]) for i in range(0, temp_length+1)]  # change 101 to length
-
-    while(i<=temp_length):  # change 100 to length
-        data.iloc[i, 0] = datetime.strftime(timestamp[i], '%d/%m/%Y %H:%M:%S')
-        print(i)
-        i += 1
-
-    return data
+path = 'TestCleaned.csv'
 
 
-def graphing(dataset,temp_length,step,marker,markersize,rotation,ha):
-    plt.plot(dataset.loc[:temp_length, 'Timestamp'], dataset.loc[:temp_length, 'Open'], marker=marker, markersize=markersize)
-    space = np.arange(0,temp_length,step)
-    plt.xticks(space, rotation=rotation, ha=ha)
+def graphing(path, rotation, horizontal_align, x_column, y_column):
+    dataset = pd.read_csv(path, parse_dates=True)
+    length = dataset[x_column].count()
+    max_y = 0
+    for x in dataset['Price']:
+        if x > max_y:
+            max_y = x
+            print(max_y)
+        else:
+            pass
+
+    x_range = np.arange(0, length, 389)
+    y_range = np.arange(0, round(max_y)+1700, 1700)
+    plt.plot(dataset[x_column], dataset[y_column], marker="o", markersize=0.1)
+    plt.xlabel('Time')
+    plt.ylabel('Price ($)')
+    plt.title('Price of Bitcoin from 18/07/10-12/03/21')
+    plt.xticks(x_range, rotation=rotation, ha=horizontal_align)
+    plt.yticks(y_range, ha=horizontal_align)
+    plt.margins(0, 0, tight=True)
     plt.show()
 
-data = cleanformat(path,temp_length)
-print(data)
-print(data["Open"].describe())
-#graphing(data,temp_length,30,"o",0.1,45,'right')
+
+graphing(path, 45, 'right', 'Timestamp', 'Price')

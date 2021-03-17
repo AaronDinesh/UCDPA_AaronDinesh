@@ -10,13 +10,16 @@ import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import norm
 
-path = 'TestCleaned.csv'
+path = 'Cleaned.csv'
 
-
-def graphing(path, rotation, horizontal_align, x_column, y_column):
-    # Reading the Cleaned Dataset
+def load_Data(path):
     dataset = pd.read_csv(path, parse_dates=True)
+    return dataset
+
+
+def graphing(dataset, rotation, horizontal_align, x_column, y_column):
     length = dataset[x_column].count()
 
     # Calculating max y value
@@ -40,8 +43,32 @@ def graphing(path, rotation, horizontal_align, x_column, y_column):
     plt.show()
 
 
-def simulator():
+def simulator(dataset, length, num_sims):
+    ln_return = np.log(1 + dataset['Price'].pct_change())
+    mean = ln_return.mean()
+    variance = ln_return.var()
+    drift = mean - (0.5*variance)
+    std_dev = ln_return.std()
+
+    daily_returns = np.exp(drift + std_dev * norm.ppf(np.random.rand(length, num_sims)))
+
+    price_list = np.zeros_like(daily_returns)
+    price_list[0] = dataset.iloc[-1, 1]
+
+    for x in range(1, length):
+        price_list[x] = price_list[x-1] * daily_returns[x]
+
+    plt.figure()
+    plt.title('{days} days after {start}'.format(days=length, start=dataset.iloc[-1,0]))
+    plt.ylabel('Prices ($)')
+    plt.xlabel('Days After')
+    plt.plot(price_list)
+    plt.show()
 
 
-graphing(path, 45, 'right', 'Timestamp', 'Price')
-simulator()
+
+
+
+data = load_Data(path)
+graphing(data, 45, 'right', 'Date', 'Price')
+simulator(data, 30, 1000)

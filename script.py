@@ -40,11 +40,21 @@ def graphing(dataset, rotation, horizontal_align, x_column, y_column):
     plt.xticks(x_range, rotation=rotation, ha=horizontal_align)
     plt.yticks(y_range, ha=horizontal_align)
     plt.margins(0, 0, tight=True)
-    plt.show()
+    #plt.show()
 
 
-def simulator(dataset, length, num_sims):
-    ln_return = np.log(1 + dataset['Price'].pct_change())
+def simulator(dataset, from_date, length, num_sims):
+    length_df = dataset['Date'].count()
+
+    for x in range(0, length_df):
+        if str(dataset.iloc[x, 0]) == from_date:
+            date_index_start = x
+        else:
+            pass
+
+
+    temp_dataset = dataset.iloc[date_index_start: , 1]
+    ln_return = np.log(1 + temp_dataset.pct_change())
     mean = ln_return.mean()
     variance = ln_return.var()
     drift = mean - (0.5*variance)
@@ -58,11 +68,17 @@ def simulator(dataset, length, num_sims):
     for x in range(1, length):
         price_list[x] = price_list[x-1] * daily_returns[x]
 
+
+    plot_list = np.zeros((length, 1))
+    for i in range(0, length):
+        plot_list[i] = price_list[i].mean()
+
+
     plt.figure()
-    plt.title('{days} days after {start}'.format(days=length, start=dataset.iloc[-1,0]))
+    plt.title('{days} days after {start}'.format(days=length, start=dataset.iloc[-1, 0]))
     plt.ylabel('Prices ($)')
     plt.xlabel('Days After')
-    plt.plot(price_list)
+    plt.plot(plot_list)
     plt.show()
 
 
@@ -71,4 +87,4 @@ def simulator(dataset, length, num_sims):
 
 data = load_Data(path)
 graphing(data, 45, 'right', 'Date', 'Price')
-simulator(data, 30, 1000)
+simulator(data, '01-January-2015', 30, 1000000)

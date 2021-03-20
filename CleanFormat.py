@@ -1,7 +1,7 @@
 import pandas as pd
 from datetime import datetime
 
-path = 'Testing.csv'
+path = 'Raw_Data.csv'
 save_path = 'Cleaned.csv'
 format_str = '%d-%B-%Y'
 

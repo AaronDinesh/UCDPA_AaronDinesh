@@ -12,14 +12,12 @@ def cleanformat(path, save_path, format_string):
     data = pd.read_csv(path)
     data.dropna(inplace=True)
     data.reset_index(drop=True, inplace=True)
-    print(data)
 
     # Counts number of rows
     length = data['Date'].count()
 
     # Read in UNIX timestamp into timestamp list using list comprehension
     timestamp = [datetime.fromtimestamp(data.iloc[i, 0]) for i in range(0, length)]
-    print(type(timestamp[1]))
     prices = [data.iloc[i, 1] for i in range(0, length)]
 
     # WHILE Loop to parse timestamp list and convert to datetime string using the format specified.
@@ -34,4 +32,6 @@ def cleanformat(path, save_path, format_string):
     data.to_csv(save_path, index=False)
 
 cleanformat(path,save_path, format_str)
+
+
 

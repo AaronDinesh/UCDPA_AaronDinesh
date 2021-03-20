@@ -14,6 +14,14 @@ from scipy.stats import norm
 
 path = 'Cleaned.csv'
 
+title_font = {'fontname':'Times New Roman', 'size':'20', 'color':'black', 'weight':'normal',
+              'verticalalignment':'bottom'} # Bottom vertical alignment for more space
+axis_font = {'fontname':'Times New Roman', 'size':'18'}
+
+
+
+
+
 def load_Data(path):
     dataset = pd.read_csv(path, parse_dates=True)
     return dataset
@@ -34,12 +42,12 @@ def graphing(dataset, rotation, horizontal_align, x_column, y_column):
     x_range = np.arange(0, length, 389)
     y_range = np.arange(0, round(max_y)+1700, 1700)
     plt.plot(dataset[x_column], dataset[y_column], marker="o", markersize=0.1)
-    plt.xlabel('Time')
-    plt.ylabel('Price ($)')
-    plt.title('Price of Bitcoin from 18/07/10-12/03/21')
-    plt.xticks(x_range, rotation=rotation, ha=horizontal_align)
-    plt.yticks(y_range, ha=horizontal_align)
-    plt.margins(0.002,0.002 )
+    plt.xlabel('Time', **axis_font)
+    plt.ylabel('Price ($)', **axis_font)
+    plt.title('Price of Bitcoin from 18/07/10-12/03/21', **title_font)
+    plt.xticks(x_range, rotation=rotation, ha=horizontal_align, **axis_font)
+    plt.yticks(y_range, ha=horizontal_align, **axis_font)
+    plt.margins(0.002,0.002)
     #plt.show()
     print(dataset['Price'].describe())
 
@@ -77,9 +85,12 @@ def simulator(dataset, from_date, length, num_sims, AVERAGE):
 
 
     plt.figure()
-    plt.title('{days} days after {start}'.format(days=length, start=dataset.iloc[-1, 0]))
-    plt.ylabel('Prices ($)')
-    plt.xlabel('Days After')
+    plt.title('{days} days after {start}'.format(days=length, start=dataset.iloc[-1, 0]), **title_font)
+    plt.ylabel('Prices ($)', **axis_font)
+    plt.xlabel('Days After', **axis_font)
+    plt.xticks(**axis_font)
+    plt.yticks(**axis_font)
+
     if AVERAGE:
         plt.plot(plot_list)
     else:
@@ -94,4 +105,4 @@ def simulator(dataset, from_date, length, num_sims, AVERAGE):
 
 data = load_Data(path)
 graphing(data, 45, 'right', 'Date', 'Price')
-simulator(data, '01-January-2012', 30, 75000, True)
+simulator(data, '01-January-2012', 30, 1000, False)

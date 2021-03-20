@@ -41,6 +41,7 @@ def graphing(dataset, rotation, horizontal_align, x_column, y_column):
     plt.yticks(y_range, ha=horizontal_align)
     plt.margins(0.002,0.002 )
     #plt.show()
+    print(dataset['Price'].describe())
 
 
 def simulator(dataset, from_date, length, num_sims, AVERAGE):

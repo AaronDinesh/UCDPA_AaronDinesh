@@ -1,10 +1,3 @@
-# Read Bitcoin CSV into Pandas DF --
-# Remove all NAN rows --
-# Create a graph of historical Data
-# Use a user defined function to create a graph from date range
-# Use a user defined function to perform stat analysis over a date range
-# Impliment monte carlo simulation to predict future stock price
-#
 
 import pandas as pd
 from datetime import datetime
@@ -20,13 +13,12 @@ axis_font = {'fontname':'Times New Roman', 'size':'18'}
 
 
 
-
-
+# Loads Data from CSV
 def load_Data(path):
     dataset = pd.read_csv(path, parse_dates=True)
     return dataset
 
-
+# Graphs the whole dataset
 def graphing(dataset, rotation, horizontal_align, x_column, y_column):
     length = dataset[x_column].count()
 
@@ -47,11 +39,11 @@ def graphing(dataset, rotation, horizontal_align, x_column, y_column):
     plt.title('Price of Bitcoin from 18/07/10-12/03/21', **title_font)
     plt.xticks(x_range, rotation=rotation, ha=horizontal_align, **axis_font)
     plt.yticks(y_range, ha=horizontal_align, **axis_font)
-    plt.margins(0.002,0.002)
-    #plt.show()
+    plt.margins(0.002, 0.002)
     print(dataset['Price'].describe())
 
 
+# Simulates using Monte Carlo Simulation Technique
 def simulator(dataset, from_date, length, num_sims, AVERAGE):
     length_df = dataset['Date'].count()
 
@@ -85,7 +77,7 @@ def simulator(dataset, from_date, length, num_sims, AVERAGE):
 
 
     plt.figure()
-    plt.title('{days} days after {start}'.format(days=length, start=dataset.iloc[-1, 0]), **title_font)
+    plt.title('{days} days after {start}'.format(days=(length-1), start=dataset.iloc[-1, 0]), **title_font)
     plt.ylabel('Prices ($)', **axis_font)
     plt.xlabel('Days After', **axis_font)
     plt.xticks(**axis_font)
@@ -105,4 +97,6 @@ def simulator(dataset, from_date, length, num_sims, AVERAGE):
 
 data = load_Data(path)
 graphing(data, 45, 'right', 'Date', 'Price')
-simulator(data, '01-January-2012', 30, 1000, False)
+
+# Set AVERAGE to True if you want a graph with the average of all the simulations
+simulator(data, '01-January-2020', 31, 100000, AVERAGE=False)
